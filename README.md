@@ -8,4 +8,4 @@ url = https://offside1.pythonanywhere.com/api/hello?
 parameters = {
 'visitor_name': 'YOUR_NAME',
 }
-response = request.get(url, params=parameter)
+response = requests.get(url, params=parameter)
