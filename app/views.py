@@ -19,7 +19,7 @@ class ApiView(APIView):
             parameter = {
             'lat': location.get('lat', 'Unknown'),
             'lon': location.get('lng', 'Unknown'),
-            'appid' : os.environ.get('appid'),
+            'appid' : '158d0a9768a689fa0a258e51afd28a3d',
             }
             temp = requests.get(url=temp_url, params=parameter)
             temp_data = temp.json()
