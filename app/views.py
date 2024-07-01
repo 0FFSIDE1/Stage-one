@@ -10,7 +10,7 @@ class ApiView(APIView):
     def get(self, request):
         name = request.GET.get('name', 'Anonymous')
         ip_address = self.get_client_ip(request)   
-        temp_url = 'https://api.openweathermap.org/data/2.5/weather'
+        temp_url = 'https://api.openweathermap.org/data/2.5/weather?'
         try:
             location = self.get_location(ip_address)
         except Exception as e:
@@ -19,11 +19,10 @@ class ApiView(APIView):
             parameter = {
             'lat': location.get('lat', 'Unknown'),
             'lon': location.get('lng', 'Unknown'),
-            'appid' : '158d0a9768a689fa0a258e51afd28a3d',
+            'appid' : os.environ.get('appid')
             }
             temp = requests.get(url=temp_url, params=parameter)
             temp_data = temp.json()
-            print(temp_data)
         finally:
             temperature = round((temp_data['main']['temp'] - 273.15))
             location = f"{location.get('city', 'unknown')}"
