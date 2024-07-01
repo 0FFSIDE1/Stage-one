@@ -10,7 +10,7 @@ class ApiView(APIView):
     def get(self, request):
         name = request.GET.get('name', 'Anonymous')
         ip_address = self.get_client_ip(request)   
-        temp_url = 'https://api.openweathermap.org/data/2.5/weather?'
+        temp_url = 'https://api.openweathermap.org/data/2.5/weather'
         try:
             location = self.get_location(ip_address)
         except Exception as e:
@@ -34,7 +34,7 @@ class ApiView(APIView):
                 'ip': ip_address,
             }
         return Response(context)
-
+    
     def get_client_ip(self, request):
         x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
         if x_forwarded_for:
@@ -56,5 +56,7 @@ class ApiView(APIView):
                 return {'city': 'Unknown', 'lat': 'Unknown', 'lng': 'Unknown'}
         except Exception as e:
             return {'city': 'Unknown', 'lat': 'Unknown', 'lng': 'Unknown'}
+    
+    
             
         
