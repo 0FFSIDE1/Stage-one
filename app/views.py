@@ -35,7 +35,6 @@ class ApiView(APIView):
             location = f"{data['city']}, {data['countryName']}"
             greeting = f"Hello, {name}!, the temperature is {temperature} degrees Celsius in {location}"
             context = {
-                'name': name,
                 'location': location,
                 'greetings': greeting,
                 'ip': ip_address,
