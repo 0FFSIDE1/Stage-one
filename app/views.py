@@ -8,7 +8,7 @@ import geocoder
 
 class ApiView(APIView):
     def get(self, request):
-        name = request.GET.get('name', 'Anonymous')
+        name = request.GET.get('visitor_name', 'Anonymous')
         ip_address = self.get_client_ip(request)   
         temp_url = 'https://api.openweathermap.org/data/2.5/weather?'
         try:
@@ -19,10 +19,12 @@ class ApiView(APIView):
             parameter = {
             'lat': location.get('lat', 'Unknown'),
             'lon': location.get('lng', 'Unknown'),
-            'appid' : os.environ.get('appid')
+            'appid' : 'ff331be1723434bf388539d1db89d94b',
             }
+            print(parameter['appid'])
             temp = requests.get(url=temp_url, params=parameter)
             temp_data = temp.json()
+            print(temp)
         finally:
             temperature = round((temp_data['main']['temp'] - 273.15))
             location = f"{location.get('city', 'unknown')}"
@@ -45,6 +47,7 @@ class ApiView(APIView):
     def get_location(self, ip):
         try:
             g = geocoder.ip(ip)
+            print(g)
             if g.ok:
                 return {
                     'city': g.city,
