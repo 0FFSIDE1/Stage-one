@@ -8,7 +8,7 @@ import geocoder
 
 class ApiView(APIView):
     def get(self, request):
-        name = request.GET.get('name', 'Anonymous')
+        name = request.GET.get('visitor_name', 'Anonymous')
         ip_address = self.get_client_ip(request)   
         temp_url = 'https://api.openweathermap.org/data/2.5/weather?'
         try:
