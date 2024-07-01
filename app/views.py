@@ -3,14 +3,13 @@ import requests
 from rest_framework.response import Response
 from rest_framework.views import APIView
 import os
+import geocoder
 # Create your views here.
 
 class ApiView(APIView):
     def get(self, request):
         name = request.GET.get('name', 'Anonymous')
-        print(name)
         ip_address = self.get_client_ip(request)   
-        url = 'https://apiip.net/api/check'
         ACCESS_KEY = os.environ.get('ACCESS_KEY')
         params = {
             'ip': ip_address,
@@ -18,21 +17,21 @@ class ApiView(APIView):
         }
         temp_url = 'https://api.openweathermap.org/data/2.5/weather?'
         try:
-            response = requests.get(url=url, params=params)
+            location = self.get_location(ip_address)
         except Exception as e:
             location = request.GET.get('location', 'Unknown')
         else:
-            data = response.json()
             parameter = {
-            'lat': data['latitude'],
-            'lon': data['longitude'],
+            'lat': location.get('lat', 'Unknown'),
+            'lon': location.get('lng', 'Unknown'),
             'appid' : os.environ.get('appid'),
             }
             temp = requests.get(url=temp_url, params=parameter)
             temp_data = temp.json()
+            print(temp_data)
         finally:
-            temperature = round((temp_data['main']['temp'] - 32) * 5/9)
-            location = f"{data['city']}, {data['countryName']}"
+            temperature = round((temp_data['main']['temp'] - 273.15))
+            location = f"{location.get('city', 'unknown')}"
             greeting = f"Hello, {name}!, the temperature is {temperature} degrees Celsius in {location}"
             context = {
                 'location': location,
@@ -48,5 +47,19 @@ class ApiView(APIView):
         else:
             ip = request.META.get('REMOTE_ADDR')
         return ip
+
+    def get_location(self, ip):
+        try:
+            g = geocoder.ip(ip)
+            if g.ok:
+                return {
+                    'city': g.city,
+                    'lat': g.latlng[0],
+                    'lng': g.latlng[1]
+                }
+            else:
+                return {'city': 'Unknown', 'lat': 'Unknown', 'lng': 'Unknown'}
+        except Exception as e:
+            return {'city': 'Unknown', 'lat': 'Unknown', 'lng': 'Unknown'}
             
         
