@@ -29,9 +29,9 @@ class ApiView(APIView):
             location = f"{location.get('city', 'unknown')}"
             greeting = f"Hello, {name}!, the temperature is {temperature} degrees Celsius in {location}"
             context = {
-                'location': location,
                 'greetings': greeting,
-                'ip': ip_address,
+                'location': location,
+                'client_ip': ip_address,
             }
         return Response(context)
     
