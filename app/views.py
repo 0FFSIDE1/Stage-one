@@ -1,4 +1,3 @@
-from django.shortcuts import render
 import requests
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -17,14 +16,12 @@ class ApiView(APIView):
             location = request.GET.get('location', 'Unknown')
         else:
             parameter = {
-            'lat': location.get('lat', 'Unknown'),
-            'lon': location.get('lng', 'Unknown'),
+            'lat': location.get('lat'),
+            'lon': location.get('lng'),
             'appid' : 'ff331be1723434bf388539d1db89d94b',
             }
-            print(parameter['appid'])
             temp = requests.get(url=temp_url, params=parameter)
             temp_data = temp.json()
-            print(temp)
         finally:
             temperature = round((temp_data['main']['temp'] - 273.15))
             location = f"{location.get('city', 'unknown')}"
@@ -47,7 +44,6 @@ class ApiView(APIView):
     def get_location(self, ip):
         try:
             g = geocoder.ip(ip)
-            print(g)
             if g.ok:
                 return {
                     'city': g.city,
