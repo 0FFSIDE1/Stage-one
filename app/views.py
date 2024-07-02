@@ -1,7 +1,6 @@
 import requests
 from rest_framework.response import Response
 from rest_framework.views import APIView
-import os
 import geocoder
 # Create your views here.
 
@@ -9,28 +8,23 @@ class ApiView(APIView):
     def get(self, request):
         name = request.GET.get('visitor_name', 'Anonymous')
         ip_address = self.get_client_ip(request)   
+        print(ip_address)
         temp_url = 'https://api.openweathermap.org/data/2.5/weather?'
-        try:
-            location = self.get_location(ip_address)
-        except Exception as e:
-            location = request.GET.get('location', 'Unknown')
-        else:
-            parameter = {
-            'lat': location.get('lat'),
-            'lon': location.get('lng'),
+        location = self.get_location(request, ip_address)
+        print(location)
+        parameter = {
+            'q': location['city'],
             'appid' : 'ff331be1723434bf388539d1db89d94b',
-            }
-            temp = requests.get(url=temp_url, params=parameter)
-            temp_data = temp.json()
-        finally:
-            temperature = round((temp_data['main']['temp'] - 273.15))
-            location = f"{location.get('city', 'unknown')}"
-            greeting = f"Hello, {name}!, the temperature is {temperature} degrees Celsius in {location}"
-            context = {
-                'greetings': greeting,
-                'location': location,
-                'client_ip': ip_address,
-            }
+        }
+        temp = requests.get(url=temp_url, params=parameter)
+        temp_data = temp.json()
+        temperature = round((temp_data['main']['temp'] - 273.15))
+        greeting = f"Hello, {name}!, the temperature is {temperature} degrees Celsius in {location['city']}"
+        context = {
+            'greetings': greeting,
+            'location': location['city'],
+            'client_ip': ip_address,
+        }
         return Response(context)
     
     def get_client_ip(self, request):
@@ -41,20 +35,13 @@ class ApiView(APIView):
             ip = request.META.get('REMOTE_ADDR')
         return ip
 
-    def get_location(self, ip):
-        try:
-            g = geocoder.ip(ip)
-            if g.ok:
-                return {
-                    'city': g.city,
-                    'lat': g.latlng[0],
-                    'lng': g.latlng[1]
-                }
-            else:
-                return {'city': 'Unknown', 'lat': 'Unknown', 'lng': 'Unknown'}
-        except Exception as e:
-            return {'city': 'Unknown', 'lat': 'Unknown', 'lng': 'Unknown'}
-    
+    def get_location(self, request, ip):
+        g = geocoder.ip(ip)
+        print(g.status)
+        if g.status == 'OK':
+            return g.json
+        else:
+            return {'city': 'Unknown'}
+            
     
             
-        
