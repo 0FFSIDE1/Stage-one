@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-00xfhz7akgra$tg9ze)xhhuj*v4azi-awy@%on-d!@8yk*ao7p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['offside1.pythonanywhere.com','a5d8-102-88-62-235.ngrok-free.app', '127.0.0.1', '127.0.0.1:8000']
+ALLOWED_HOSTS = ['offside1.pythonanywhere.com','1041-102-89-32-11.ngrok-free.app', '127.0.0.1', '127.0.0.1:8000']
 
 
 # Application definition
